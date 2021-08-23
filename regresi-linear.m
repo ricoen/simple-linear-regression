@@ -1,15 +1,18 @@
-# Data of Lumens and Watts
-# Halogen incandescent (tungsten halogen) 230 V
+% Data of Lumens and Watts
+% Halogen incandescent (tungsten halogen) 230 V
 lumens = [375, 600, 900, 1125, 1670, 2565, 3520];
 watts = [25, 40, 60, 75, 100, 150, 200];
 
+% Change variable name
 x = [lumens];
 y = [watts];
 
+% Find n and mean of x and y
 n = length(x);
 global mean_x = mean(x)
 global mean_y = mean(y)
 
+% Function to plot the data
 function plotData(x,y)
   plot(x,y,'ro','MarkerSize',8); % Plot the data
   
@@ -17,11 +20,12 @@ function plotData(x,y)
   ylabel('Watts'); % Set the y-axis label
 end
 
-# Simple linear regression formula -> y = a + B.x
+% We use simple linear regression formula -> y = a + B.x
 
-global e_x = [];
-global e_y = [];
+global e_x = []; % errors of x
+global e_y = []; % errors of y
 
+% Function to calculate the errors
 function calcError (n, x, y)
   global e_x;
   global e_y;
@@ -36,6 +40,7 @@ function calcError (n, x, y)
   end
 endfunction
 
+% Function to calculate the numerator of B (Beta)
 function num = numerator (n)
   global e_x;
   global e_y;
@@ -51,6 +56,7 @@ function num = numerator (n)
   return;
 endfunction
 
+% Function to calculate tht denominator of B (Beta)
 function denom = denominator (n)
   global e_x;
   denom = 0;
@@ -65,11 +71,13 @@ function denom = denominator (n)
   return
 endfunction
 
+% Function to calculate the slope B (Beta)
 function B = slope (num, denom)
   B = num/denom;
   return
 endfunction
 
+% Function to calculate the intercept a (alpha)
 function a = intercept (B)
   global mean_x;
   global mean_y;
@@ -78,6 +86,7 @@ function a = intercept (B)
   return
 endfunction
 
+% Function to compute Y (prediction)
 function Y = prediction (n, a, B, x)
   Y = [];
 
@@ -88,14 +97,17 @@ function Y = prediction (n, a, B, x)
   return;
 endfunction
 
+% Function to plot the prediction
 function plotPredict(x,Y)
   plot(x,Y,'bo','MarkerSize',8); % Plot the Y prediction
 end
 
+% Function to plot the line of linear regression
 function plotLine(x, Y)
   plot(x,Y,'r-','linewidth',2); % Plot the regression line
 end
 
+% Function to calculate the RMSE
 function rmse = estimateTheError(n, y, Y)
   substract = [];
   squared_error = [];
