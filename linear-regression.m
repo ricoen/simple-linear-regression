@@ -1,10 +1,9 @@
-% Data of Lumens and Watts
-% Halogen incandescent (tungsten halogen) 230 V
-lumens = [375, 600, 900, 1125, 1670, 2565, 3520];
-watts = [25, 40, 60, 75, 100, 150, 200];
+% Data of LED's Lux and Watts
+lux = [20, 40, 72, 96, 216, 324];
+watts = [5, 8, 12, 16, 24, 36];
 
 % Change variable name
-x = [lumens];
+x = [lux];
 y = [watts];
 
 % Find n and mean of x and y
@@ -16,7 +15,7 @@ global mean_y = mean(y)
 function plotData(x,y)
   plot(x,y,'ro','MarkerSize',8); % Plot the data
   
-  xlabel('Lumens'); % Set the x-axis label
+  xlabel('lux'); % Set the x-axis label
   ylabel('Watts'); % Set the y-axis label
 end
 
