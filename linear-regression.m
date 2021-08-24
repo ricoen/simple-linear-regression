@@ -1,10 +1,10 @@
-% Data of LED's Lux and Watts
+% Data of Dimmable LED's Illuminance (lux) and Power (Watt) with 20 (m^2) of area.
 lux = [20, 40, 72, 96, 216, 324];
 watts = [5, 8, 12, 16, 24, 36];
 
-% Change variable name
-x = [lux];
-y = [watts];
+% Change variables name
+x = [watts];
+y = [lux];
 
 % Find n and mean of x and y
 n = length(x);
@@ -12,11 +12,11 @@ global mean_x = mean(x)
 global mean_y = mean(y)
 
 % Function to plot the data
-function plotData(x,y)
-  plot(x,y,'ro','MarkerSize',8); % Plot the data
+function plotData(x, y)
+  plot(x, y, 'ro', 'MarkerSize', 8); % Plot the data
   
-  xlabel('lux'); % Set the x-axis label
-  ylabel('Watts'); % Set the y-axis label
+  xlabel('Watt'); % Set the x-axis label
+  ylabel('lux'); % Set the y-axis label
 end
 
 % We use simple linear regression formula -> y = a + B.x
@@ -72,7 +72,7 @@ endfunction
 
 % Function to calculate the slope B (Beta)
 function B = slope (num, denom)
-  B = num/denom;
+  B = num / denom;
   return
 endfunction
 
@@ -97,13 +97,13 @@ function Y = prediction (n, a, B, x)
 endfunction
 
 % Function to plot the prediction
-function plotPredict(x,Y)
-  plot(x,Y,'bo','MarkerSize',8); % Plot the Y prediction
+function plotPredict(x, Y)
+  plot(x, Y, 'bo', 'MarkerSize', 8); % Plot the Y prediction
 end
 
 % Function to plot the line of linear regression
 function plotLine(x, Y)
-  plot(x,Y,'r-','linewidth',2); % Plot the regression line
+  plot(x, Y, 'r-', 'linewidth', 2); % Plot the regression line
 end
 
 % Function to calculate the RMSE
@@ -116,7 +116,7 @@ function rmse = estimateTheError(n, y, Y)
     square = power(substract(i), 2);
     squared_error = vertcat(squared_error, [square]);
   end
-  rmse = sqrt(sum(squared_error)/5);
+  rmse = sqrt(sum(squared_error) / 5);
   return;
 endfunction
 
@@ -130,12 +130,15 @@ disp(Y);
 printf('\n');
 printf('RMSE = %f\n', estimateTheError(n, y, Y));
 
-plotData(x,y);
+plotData(x, y);
 hold on;
-plotPredict(x,Y);
+plotPredict(x, Y);
 hold on;
-plotLine(x,Y);
-legend('Training data','Predicted Y','Linear Regression')
+plotLine(x, Y);
+title ("Simple Linear Regression of Power and Illuminance");
+labels = legend('Training data', 'Predicted Y', 'Linear Regression');
+legend(labels,"location", "northeastoutside");
+set (labels, "fontsize", 10);
 hold off;
 
 printf('\n');
