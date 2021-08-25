@@ -1,15 +1,10 @@
-% Data of Dimmable LED's Illuminance (lux) and Power (Watt) with 20 (m^2) of area.
+% Data of Dimmable LED's Illuminance (lux) and Power (Watt) with 20 (m^2) of area
 lux = [20, 40, 72, 96, 216, 324];
 watts = [5, 8, 12, 16, 24, 36];
 
-% Change variables name
+% Change variable names
 x = [watts];
 y = [lux];
-
-% Find n and mean of x and y
-n = length(x);
-global mean_x = mean(x)
-global mean_y = mean(y)
 
 % Function to plot the data
 function plotData(x, y)
@@ -19,8 +14,12 @@ function plotData(x, y)
   ylabel('lux'); % Set the y-axis label
 end
 
-% We use simple linear regression formula -> y = a + B.x
+% Simple linear regression formula -> y = a + B.x
 
+% Find n and mean of x and y
+n = length(x);
+global mean_x = mean(x)
+global mean_y = mean(y)
 global e_x = []; % errors of x
 global e_y = []; % errors of y
 
@@ -98,7 +97,7 @@ endfunction
 
 % Function to plot the prediction
 function plotPredict(x, Y)
-  plot(x, Y, 'bo', 'MarkerSize', 8); % Plot the Y prediction
+  plot(x, Y, 'bo', 'MarkerSize', 8); % Plot the prediction
 end
 
 % Function to plot the line of linear regression
@@ -135,7 +134,7 @@ hold on;
 plotPredict(x, Y);
 hold on;
 plotLine(x, Y);
-title ("Simple Linear Regression of Power and Illuminance");
+title ("Simple Linear Regression of Power (Watt) and Illuminance (lux)");
 labels = legend('Training data', 'Predicted Y', 'Linear Regression');
 legend(labels,"location", "northeastoutside");
 set (labels, "fontsize", 10);
