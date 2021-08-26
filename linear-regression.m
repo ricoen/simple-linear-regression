@@ -109,12 +109,14 @@ end
 function rmse = estimateTheError(n, y, Y)
   substract = [];
   squared_error = [];
+
   for i = 1:n,
     subs = Y(i) - y(i);
     substract = vertcat(substract, [subs]);
     square = power(substract(i), 2);
     squared_error = vertcat(squared_error, [square]);
   end
+  
   rmse = sqrt(sum(squared_error) / 5);
   return;
 endfunction
