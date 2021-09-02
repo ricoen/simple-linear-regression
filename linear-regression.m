@@ -1,10 +1,10 @@
-% Data of Dimmable LED's Illuminance (lux) and Power (Watt) with 20 (m^2) of area
-lux = [20, 40, 72, 96, 216, 324];
+% Data of Dimmable LED's Power (Watt) and Illuminance (lux) with 20 (m^2) of area
 watts = [5, 8, 12, 16, 24, 36];
+lux = [25, 40, 66, 88, 144, 216];
 
 % Change variable names
-x = [watts];
-y = [lux];
+global x = [watts];
+global y = [lux];
 
 % Function to plot the data
 function plotData(x, y)
@@ -16,55 +16,45 @@ end
 
 % Simple linear regression formula -> y = a + B.x
 
-% Find n and mean of x and y
-n = length(x);
-global mean_x = mean(x)
-global mean_y = mean(y)
-global e_x = []; % errors of x
-global e_y = []; % errors of y
-
 % Function to calculate the errors
-function calcError (n, x, y)
-  global e_x;
-  global e_y;
-  global mean_x;
-  global mean_y;
-
+function [e_x, e_y] = calcError ()
+  global x;
+  global y;
+  n = length(x);
+  e_x = []; % errors of x
+  e_y = []; % errors of y
   for i = 1:n,
-    err_x = x(i) - mean_x;
-    err_y = y(i) - mean_y;
+    err_x = x(i) - mean(x);
+    err_y = y(i) - mean(y);
     e_x = vertcat(e_x, [err_x]);
     e_y = vertcat(e_y, [err_y]);
   end
 endfunction
 
 % Function to calculate the numerator of B (Beta)
-function num = numerator (n)
-  global e_x;
-  global e_y;
+function num = numerator (x, y)
+  n = length(x);
+  [e_x, e_y] = calcError();
   num = 0;
   multiplication = [];
-
   for i = 1:n,
-    x = e_x(i) * e_y(i);
-    multiplication = vertcat(multiplication, [x]);
+    x_updated = e_x(i) * e_y(i);
+    multiplication = vertcat(multiplication, [x_updated]);
   end
-
   num = sum(multiplication);
   return;
 endfunction
 
 % Function to calculate tht denominator of B (Beta)
-function denom = denominator (n)
-  global e_x;
+function denom = denominator (x)
+  n = length(x);
+  [e_x, _] = calcError()
   denom = 0;
   square = [];
-
   for i = 1:n,
-    y = power(e_x(i), 2);
-    square = vertcat(square, [y]);
+    y_updated = power(e_x(i), 2);
+    square = vertcat(square, [y_updated]);
   end
-
   denom = sum(square);
   return
 endfunction
@@ -76,18 +66,15 @@ function B = slope (num, denom)
 endfunction
 
 % Function to calculate the intercept a (alpha)
-function a = intercept (B)
-  global mean_x;
-  global mean_y;
-
-  a = mean_y - B * mean_x;
+function a = intercept (B, x, y)
+  a = mean(y) - B * mean(x);
   return
 endfunction
 
 % Function to compute Y (prediction)
-function Y = prediction (n, a, B, x)
+function Y = prediction (a, B, x)
+  n = length(x);
   Y = [];
-
   for i = 1:n,
     predict = a + B * x(i);
     Y = vertcat(Y, [predict]);
@@ -106,36 +93,35 @@ function plotLine(x, Y)
 end
 
 % Function to calculate the RMSE
-function rmse = estimateTheError(n, y, Y)
+function rmse = estimateTheError(x, y, Y)
+  n = length(x);
   substract = [];
   squared_error = [];
-
   for i = 1:n,
     subs = Y(i) - y(i);
     substract = vertcat(substract, [subs]);
     square = power(substract(i), 2);
     squared_error = vertcat(squared_error, [square]);
   end
-  
   rmse = sqrt(sum(squared_error) / 5);
   return;
 endfunction
 
-calcError(n, x, y);
-B = slope(numerator(n), denominator(n));
-a = intercept(B);
-Y = prediction(n, a, B, x);
+B = slope(numerator(x, y), denominator(x));
+a = intercept(B, x, y);
+Y = prediction(a, B, x);
 
 printf('Prediction: \n');
 disp(Y);
 printf('\n');
-printf('RMSE = %f\n', estimateTheError(n, y, Y));
+printf('RMSE = %f\n', estimateTheError(x, y, Y));
 
 plotData(x, y);
 hold on;
 plotPredict(x, Y);
 hold on;
 plotLine(x, Y);
+
 title ("Simple Linear Regression of Power (Watt) and Illuminance (lux)");
 labels = legend('Training data', 'Predicted Y', 'Linear Regression');
 legend(labels,"location", "northeastoutside");
