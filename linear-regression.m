@@ -1,13 +1,15 @@
-% Data of Dimmable LED's Power (Watt) and Illuminance (lux) with 20 (m^2) of area
-watts = [5, 8, 12, 16, 24, 36];
-lux = [25, 40, 66, 88, 144, 216];
+function [x, y] = getVars()
+  % Data of Dimmable LED's Power (Watt) and Illuminance (lux) with 20 (m^2) of area
+  watts = [5, 8, 12, 16, 24, 36];
+  lux = [25, 40, 66, 88, 144, 216];
 
-% Change variable names
-global x = [watts];
-global y = [lux];
+  x = [watts];
+  y = [lux];
+end
 
 % Function to plot the data
-function plotData(x, y)
+function plotData()
+  [x, y] = getVars();
   plot(x, y, 'ro', 'MarkerSize', 8); % Plot the data
   
   xlabel('Watt'); % Set the x-axis label
@@ -18,8 +20,7 @@ end
 
 % Function to calculate the errors
 function [e_x, e_y] = calcError ()
-  global x;
-  global y;
+  [x, y] = getVars();
   n = length(x);
   e_x = []; % errors of x
   e_y = []; % errors of y
@@ -32,7 +33,8 @@ function [e_x, e_y] = calcError ()
 endfunction
 
 % Function to calculate the numerator of B (Beta)
-function num = numerator (x, y)
+function num = numerator ()
+  [x, y] = getVars();
   n = length(x);
   [e_x, e_y] = calcError();
   num = 0;
@@ -46,7 +48,8 @@ function num = numerator (x, y)
 endfunction
 
 % Function to calculate tht denominator of B (Beta)
-function denom = denominator (x)
+function denom = denominator ()
+  [x, _] = getVars();
   n = length(x);
   [e_x, _] = calcError()
   denom = 0;
@@ -66,13 +69,15 @@ function B = slope (num, denom)
 endfunction
 
 % Function to calculate the intercept a (alpha)
-function a = intercept (B, x, y)
+function a = intercept (B)
+  [x, y] = getVars();
   a = mean(y) - B * mean(x);
   return
 endfunction
 
 % Function to compute Y (prediction)
-function Y = prediction (a, B, x)
+function Y = prediction (a, B)
+  [x, _] = getVars();
   n = length(x);
   Y = [];
   for i = 1:n,
@@ -83,22 +88,25 @@ function Y = prediction (a, B, x)
 endfunction
 
 % Function to plot the prediction
-function plotPredict(x, Y)
-  plot(x, Y, 'bo', 'MarkerSize', 8); % Plot the prediction
+function plotPredict(Y_predict)
+  [x, _] = getVars();
+  plot(x, Y_predict, 'bo', 'MarkerSize', 8); % Plot the prediction
 end
 
 % Function to plot the line of linear regression
-function plotLine(x, Y)
-  plot(x, Y, 'r-', 'linewidth', 2); % Plot the regression line
+function plotLine(Y_predict)
+  [x, _] = getVars();
+  plot(x, Y_predict, 'r-', 'linewidth', 2); % Plot the regression line
 end
 
 % Function to calculate the RMSE
-function rmse = estimateTheError(x, y, Y)
+function rmse = estimateTheError(Y_predict)
+  [x, y] = getVars();
   n = length(x);
   substract = [];
   squared_error = [];
   for i = 1:n,
-    subs = Y(i) - y(i);
+    subs = Y_predict(i) - y(i);
     substract = vertcat(substract, [subs]);
     square = power(substract(i), 2);
     squared_error = vertcat(squared_error, [square]);
@@ -107,20 +115,20 @@ function rmse = estimateTheError(x, y, Y)
   return;
 endfunction
 
-B = slope(numerator(x, y), denominator(x));
-a = intercept(B, x, y);
-Y = prediction(a, B, x);
+B = slope(numerator(), denominator());
+a = intercept(B);
+Y = prediction(a, B);
 
 printf('Prediction: \n');
 disp(Y);
 printf('\n');
-printf('RMSE = %f\n', estimateTheError(x, y, Y));
+printf('RMSE = %f\n', estimateTheError(Y));
 
-plotData(x, y);
+plotData();
 hold on;
-plotPredict(x, Y);
+plotPredict(Y);
 hold on;
-plotLine(x, Y);
+plotLine(Y);
 
 title ("Simple Linear Regression of Power (Watt) and Illuminance (lux)");
 labels = legend('Training data', 'Predicted Y', 'Linear Regression');
