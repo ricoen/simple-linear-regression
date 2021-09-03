@@ -2,7 +2,6 @@ function [x, y] = getVars()
   % Data of Dimmable LED's Power (Watt) and Illuminance (lux) with 20 (m^2) of area
   watts = [5, 8, 12, 16, 24, 36];
   lux = [25, 40, 66, 88, 144, 216];
-
   x = [watts];
   y = [lux];
 end
@@ -10,6 +9,7 @@ end
 % Function to plot the data
 function plotData()
   [x, y] = getVars();
+
   plot(x, y, 'ro', 'MarkerSize', 8); % Plot the data
   
   xlabel('Watt'); % Set the x-axis label
@@ -90,6 +90,7 @@ endfunction
 % Function to plot the prediction
 function plotPredict(Y_predict)
   [x, _] = getVars();
+  
   plot(x, Y_predict, 'bo', 'MarkerSize', 8); % Plot the prediction
 end
 
