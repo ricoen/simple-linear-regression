@@ -112,7 +112,7 @@ function rmse = estimateTheError(Y_predict)
     square = power(substract(i), 2);
     squared_error = vertcat(squared_error, [square]);
   end
-  rmse = sqrt(sum(squared_error) / 5);
+  rmse = sqrt(sum(squared_error) / n);
   return;
 endfunction
 
